@@ -26,6 +26,7 @@ const LoginForm = () => {
     }
 
     try {
+      console.log(userFormData)
       const response = await loginUser(userFormData);
 
       if (!response.ok) {
