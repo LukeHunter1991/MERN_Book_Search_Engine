@@ -7,14 +7,14 @@ const resolvers = {
         user: async () => {
             return await User.find({})
         },
-        async getSingleUser(parent, { id, username }, context) {
+        me: async (parent, args, context) => {
             try {
               const foundUser = await User.findOne({
-                $or: [{ _id: id }, { username: username }],
+                _id: context.user._id
               });
-      
+              console.log(foundUser)
               if (!foundUser) {
-                throw new Error('Cannot find a user with this id!');
+                throw AuthenticationError;
               }
       
               return foundUser;
@@ -30,7 +30,7 @@ const resolvers = {
               const user = await User.create({username, email, password});
       
               if (!user) {
-                throw new Error('Something is wrong!');
+                throw AuthenticationError;
               }
       
               const token = signToken(user);
@@ -39,30 +39,34 @@ const resolvers = {
               throw AuthenticationError;
             }
           },
-          login: async (parent, { username, email, password }, context) => {
-            const user = await User.findOne({ $or: [{ username: username }, { email: email }] });
+          login: async (parent, { email, password }, context) => {
+            const user = await User.findOne({  email: email  });
+
             if (!user) {
-              throw new Error("Can't find this user");
+                throw AuthenticationError;
             }
         
             const correctPw = await user.isCorrectPassword(password);
-        
+
             if (!correctPw) {
-              throw new Error('Wrong password!');
+                throw AuthenticationError;
             }
             const token = signToken(user);
             return { token, user };
           },
           saveBook: async (parent, { bookData }, context) => {
             try {
+              console.log("BOOK DATA", bookData)
               const updatedUser = await User.findOneAndUpdate(
                 { _id: context.user._id },
                 { $addToSet: { savedBooks: bookData } },
                 { new: true, runValidators: true }
               );
+
+              console.log("USER", updatedUser)
               
               if (!updatedUser) {
-                throw new Error("Can't find this user");
+                throw AuthenticationError;
               }
 
               return updatedUser
@@ -73,11 +77,11 @@ const resolvers = {
           deleteBook: async (parent, { bookId }, context) => {
             const updatedUser = await User.findOneAndUpdate(
               { _id: context.user._id },
-              { $pull: { savedBooks: { _id: bookId } } },
+              { $pull: { savedBooks: { bookId: bookId } } },
               { new: true }
             );
             if (!updatedUser) {
-              throw new Error("Couldn't find user with this id!");
+                throw AuthenticationError;
             }
             return updatedUser;
           },
