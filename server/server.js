@@ -1,4 +1,8 @@
+// Utilise .env for privacy.
+require('dotenv').config();
+
 const express = require('express');
+
 // Import Apoolo server and middleware
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
