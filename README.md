@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-https://booksearch1991.netlify.app/
+https://mern-book-search-engine-h5yy.onrender.com/
 
 ## Description
 
@@ -18,7 +18,7 @@ In this program I built on top of starter code with a fully functioning Google B
 
 ## Installation
 
-No installation needed. This web app is hosted on Netlify.
+No installation needed. This web app is hosted on Render.
 
 ## Usage
 
